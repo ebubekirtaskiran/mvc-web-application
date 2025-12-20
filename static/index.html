@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/static/arayuz.css" />
+    <title>
+      Masaüstü – Klasör Görünümü (Responsive • Tam Sığdır • Düzgün Hizalama)
+    </title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div class="page">
+      <div class="toprow">
+        <div class="crumb">Kişisel &nbsp;&gt;&nbsp; Masaüstü</div>
+        <div class="searchWrap">
+          <svg class="icon-search" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="26" cy="26" r="18" fill="none" stroke="black" stroke-width="5"/>
+            <line x1="39" y1="39" x2="62" y2="62" stroke="black" stroke-width="6" stroke-linecap="round"/>
+          </svg>
+          <div class="dots" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="layout">
+        <div class="left">
+          <div class="leftRow" data-path="masaustu"><div class="leftLabel">MASAÜSTÜ</div></div>
+          <div class="leftRow" data-path="indirilenler"><div class="leftLabel">İNDİRİLENLER</div></div>
+          <div class="leftRow" data-path="resimler"><div class="leftLabel">RESİMLER</div></div>
+          <div class="leftRow" data-path="belgeler"><div class="leftLabel">BELGELER</div></div>
+        </div>
+
+        <div class="vline" aria-hidden="true"></div>
+
+        <div class="right">
+          <div class="tableHead">
+            <div class="th"></div>
+            <div class="th">AD</div>
+            <div class="th">TARİH</div>
+            <div class="th">TÜR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        let isLoading = false;
+        let currentPath = "";
+
+        const leftRows = document.querySelectorAll(".leftRow");
+        const crumbEl = document.querySelector(".crumb");
+        const rightEl = document.querySelector(".right");
+
+        const listContainer = document.createElement("div");
+        listContainer.id = "fileList";
+        rightEl.appendChild(listContainer);
+
+        function renderList(files) {
+          listContainer.innerHTML = "";
+          if (!files.length) {
+            listContainer.innerHTML =
+              `<div style="padding:10px;color:#888;">Bu klasörde dosya yok.</div>`;
+            return;
+          }
+
+          files.forEach(item => {
+            const row = document.createElement("div");
+            row.className = "row";
+            row.innerHTML = `
+              <div class="icoCell">📁</div>
+              <div class="nameCell"><span>${item.name}</span></div>
+              <div class="dateCell">—</div>
+              <div class="typeCell">${item.is_folder ? "Klasör" : "Dosya"}</div>
+            `;
+            listContainer.appendChild(row);
+          });
+        }
+
+        async function loadFiles(folder) {
+          if (isLoading) return;
+          isLoading = true;
+          currentPath = folder;
+
+          try {
+            const res = await fetch(`/api/list?path=${folder}`);
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+            renderList(data);
+          } catch (err) {
+            listContainer.innerHTML =
+              `<div style="padding:10px;color:red;">${err.message}</div>`;
+          } finally {
+            isLoading = false;
+          }
+        }
+
+        // Sol menü
+        leftRows.forEach(row => {
+          row.addEventListener("click", () => {
+            const folder = row.dataset.path;
+            crumbEl.textContent = "Kişisel > " + folder;
+            loadFiles(folder);
+          });
+        });
+
+        // ✅ OBSERVER – SSE
+        function startSSE() {
+          const es = new EventSource("/events");
+          es.addEventListener("fschange", () => {
+            if (!isLoading && currentPath) {
+              loadFiles(currentPath);
+            }
+          });
+        }
+
+        // İlk açılış
+        const params = new URLSearchParams(window.location.search);
+        const initialFolder = params.get("folder") || "masaustu";
+        currentPath = initialFolder;
+        crumbEl.textContent = "Kişisel > " + initialFolder;
+
+        loadFiles(initialFolder);
+        startSSE();
+
+      })();
+    </script>
+  </body>
+</html>

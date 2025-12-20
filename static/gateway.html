@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <title>Gateway – 4 Klasör Paneli</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      box-sizing: border-box;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 8px;
+      height: 100vh;
+      padding: 8px;
+    }
+    .panel {
+      border: 3px solid #000;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #e5e5e5;
+    }
+    .head {
+      padding: 6px 10px;
+      font-weight: 700;
+      border-bottom: 3px solid #000;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .head span.title {
+      white-space: nowrap;
+    }
+    .openBtn {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #000;
+      background: #fff;
+      cursor: pointer;
+    }
+    .openBtn:hover {
+      background: #000;
+      color: #fff;
+    }
+    iframe {
+      flex: 1 1 auto;
+      border: 0;
+      width: 100%;
+      background: #d0d0d0;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <div class="panel">
+      <div class="head">
+        <span class="title">Masaüstü (8081)</span>
+        <button class="openBtn" onclick="openPanel(8081, 'masaustu')">
+          Yeni sekmede aç
+        </button>
+      </div>
+      <iframe id="frm-masaustu"></iframe>
+    </div>
+
+    <div class="panel">
+      <div class="head">
+        <span class="title">İndirilenler (8082)</span>
+        <button class="openBtn" onclick="openPanel(8082, 'indirilenler')">
+          Yeni sekmede aç
+        </button>
+      </div>
+      <iframe id="frm-indirilenler"></iframe>
+    </div>
+
+    <div class="panel">
+      <div class="head">
+        <span class="title">Resimler (8083)</span>
+        <button class="openBtn" onclick="openPanel(8083, 'resimler')">
+          Yeni sekmede aç
+        </button>
+      </div>
+      <iframe id="frm-resimler"></iframe>
+    </div>
+
+    <div class="panel">
+      <div class="head">
+        <span class="title">Belgeler (8084)</span>
+        <button class="openBtn" onclick="openPanel(8084, 'belgeler')">
+          Yeni sekmede aç
+        </button>
+      </div>
+      <iframe id="frm-belgeler"></iframe>
+    </div>
+  </div>
+
+  <script>
+    const host = window.location.hostname || "127.0.0.1";
+
+    // Panellerin içi – her port kendi tek panel arayüzünü gösteriyor
+    document.getElementById("frm-masaustu").src    =
+      `http://${host}:8081/?folder=masaustu`;
+    document.getElementById("frm-indirilenler").src =
+      `http://${host}:8082/?folder=indirilenler`;
+    document.getElementById("frm-resimler").src    =
+      `http://${host}:8083/?folder=resimler`;
+    document.getElementById("frm-belgeler").src    =
+      `http://${host}:8084/?folder=belgeler`;
+
+    // Buton: ilgili portu yeni sekmede aç
+    function openPanel(port, folder) {
+      const url = `http://${host}:${port}/?folder=${folder}`;
+      window.open(url, "_blank");
+    }
+  </script>
+</body>
+</html>
