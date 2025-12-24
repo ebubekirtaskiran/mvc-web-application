@@ -1,20 +1,29 @@
-# MVC Web Application (Python)
+# MVC-Based Software System (Python)
 
-This project is a simple **MVC (Model–View–Controller)** based web application written in Python.  
-It demonstrates a clean separation of concerns by splitting responsibilities into Model, View, and Controller layers.
+This project demonstrates a **Model–View–Controller (MVC)** based software architecture implemented in Python.  
+The primary goal is to design a **clean, modular, and maintainable system** by clearly separating responsibilities
+between data management, control logic, and presentation layers.
 
-## Features
-- MVC architecture (Model / View / Controller separation)
-- Static UI files under `static/` (HTML/CSS)
-- Example controller routing and basic request handling
+## Problem Definition
+In medium and large-scale software systems, tightly coupled components reduce maintainability, testability,
+and long-term scalability. This project addresses that problem by applying the **MVC architectural pattern**
+to enforce separation of concerns and improve system clarity.
+
+## System Architecture
+The application is structured into three main layers:
+
+- **Model**: Handles data representation and business logic
+- **View**: Responsible for user interface and output rendering
+- **Controller**: Acts as an intermediary, coordinating Model and View interactions
+
+This separation allows independent development, easier debugging, and future extensibility.
 
 ## Project Structure
-
 ```text
 .
-├── controller.py
 ├── model.py
 ├── view.py
+├── controller.py
 ├── static/
 │   ├── index.html
 │   ├── gateway.html
@@ -22,49 +31,37 @@ It demonstrates a clean separation of concerns by splitting responsibilities int
 ├── file_generator.py
 └── README.md
 
-Note: Some folders may contain sample/demo files used during development (e.g., masaustu/, indirilenler/, belgeler/, resimler/).
 
-MVC Explanation
-Model (model.py)
+Security and Configuration Considerations
 
-Responsible for data access, data processing, and business logic.
+No sensitive information is stored in the source code
 
-Stores the logic that should not depend on the UI.
+Configuration and credentials (if required) are designed to be loaded via environment variables
 
-View (view.py + static/)
+.gitignore is used to exclude cache files and confidential data from version control
 
-Responsible for the user interface and rendering output.
+Technologies Used
 
-static/ includes HTML/CSS resources.
+Python
 
-Controller (controller.py)
+MVC architectural pattern
 
-Connects Model and View.
+HTML / CSS (UI layer)
 
-Handles requests and decides which view to display.
-
-Requirements
-
-Python 3.10+ (recommended)
+Git & GitHub for version control
 
 How to Run
-
-Open a terminal in the project folder.
-
-Run the controller (example):
-
 python controller.py
 
+Possible Improvements
 
-If your project supports specifying a port, you can run:
+Adding automated unit tests for each layer
 
-python controller.py --port 8081
+Introducing dependency injection for improved testability
 
+Extending the system with a database-backed model layer
 
-Then open in the browser:
-
-http://127.0.0.1:8081
-
+Enhancing error handling and logging mechanisms
 
 Author
 
